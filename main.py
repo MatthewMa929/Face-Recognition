@@ -16,27 +16,23 @@ reference_img = cv2.imread("reference.jpg")
 
 def check_face(frame):
     global face_match
-    print("check")
     try:
         if DeepFace.verify(frame, reference_img.copy())['verified']:
             face_match = True
-            #print("true")
         else:
             face_match = False
-            #print('a')
     except ValueError:
         face_match = False
-        #print('b')
 
 while True:
     ret, frame = cap.read()
 
     if ret:
         if counter % 15 == 0:
-            print('mhm')
             try:
-                check_face(frame.copy())
-                #threading.Thread(target=check_face, args=(frame.copy(),))
+                thread = threading.Thread(target=check_face, args=(frame.copy(),))
+                thread.start()
+                thread.join()
             except ValueError:
                 pass
         counter += 1
